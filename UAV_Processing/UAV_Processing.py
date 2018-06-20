@@ -40,23 +40,27 @@ def parse_args():
 
 def exifread(image_loc):
     # EXIF READ: Read and store the specific EXIF tags of an image
+    img_width, img_height, cam_yaw, cam_pitch, cam_roll, flight_yaw, rel_alt, \
+        foc_len, lat, lon = 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 
     with exiftool.ExifTool() as et:
         try:
             img_width = float(et.get_tag('EXIF:ExifImageWidth', image_loc))
             img_height = float(et.get_tag('EXIF:ExifImageHeight', image_loc))
+            foc_len = float(et.get_tag('EXIF:FocalLength', image_loc))
+            lat = (et.get_tag('EXIF:GPSLatitude', image_loc))
+            lon = (et.get_tag('EXIF:GPSLongitude', image_loc))
             cam_yaw = float(str(et.get_tag('XMP:GimbalYawDegree', image_loc)))
             cam_pitch = float(str(et.get_tag('XMP:GimbalPitchDegree', image_loc)))
             cam_roll = float(str(et.get_tag('XMP:GimbalRollDegree', image_loc)))
             flight_yaw = float(str(et.get_tag('XMP:FlightYawDegree', image_loc)))
             rel_alt = float(str(et.get_tag('XMP:RelativeAltitude', image_loc)))
-            foc_len = float(et.get_tag('EXIF:FocalLength', image_loc))
-            lat = (et.get_tag('EXIF:GPSLatitude', image_loc))
-            lon = (et.get_tag('EXIF:GPSLongitude', image_loc))
+
             return img_width, img_height, cam_yaw, cam_pitch, cam_roll, flight_yaw, rel_alt, \
                 foc_len, lat, lon
         except:
-            return 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+            return img_width, img_height, cam_yaw, cam_pitch, cam_roll, flight_yaw, rel_alt, \
+                foc_len, lat, lon
 
 
 def bearing(lat_01, lon_01, lat_02, lon_02):
